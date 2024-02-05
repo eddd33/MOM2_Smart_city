@@ -1,6 +1,7 @@
 from hems import HEMS
 from mesa import Model
 from mesa.time import RandomActivation
+import numpy as np
 
 ####################################################################################################
 
@@ -30,18 +31,16 @@ class CEMS(Model):
             self.schedule.add(a)
         self.stockage_ess = BoundedVariable(5*100, 0, 5*100) # 5*100 kWh de stockage d'énergie solaire
         self.stockage_ev = BoundedVariable(70*6, 0, 70*6) # 70 voitures électriques de 6 kWh
+        self.generator = 0
     def step(self):
+        self.generator = 0
+        for _ in range (30):
+            self.generator += np.random.uniform(100, 300)
         self.schedule.step()
 
 # test
 c = CEMS()
-consooooo = 0
+
 for i in range(24):
     c.step()
-    # on somme les consommations de chaque agent
-    consommation_totale = 0
-    for a in c.schedule.agents:
-        consommation_totale += a.schedule.agents[0].consommation
-    print(consommation_totale)
-    consooooo += consommation_totale
-print("total",consooooo)
+    print (f"""{i}h: {c.stockage_ess.value} kWh d'énergie solaire, {c.stockage_ev.value} kWh de voitures électriques, {c.generator} kWh générés""")
