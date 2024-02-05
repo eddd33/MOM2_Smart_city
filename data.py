@@ -11,18 +11,18 @@ def get_consumption_yesterday():
     heures_pleines = [8,9,10,11,12,13,14,20,21]
     heures_creuses = [1,2,3,4,5]
 
-    # la consommation d'une maison est comprise entre 5 et 15 kWh par jour
+    # la consommation d'une maison est comprise entre 5 et 15 kWh
     # on suppose que la consommation est plus élevée en heure pleine
 
     # pour chaque heure de la journée, on retourne la consommation de chaque maison
     consommation = []
     for i in range(24):
         if i in heures_pleines:
-            conso_maisons = np.random.uniform(0.24, 0.56, n_maisons)*1.1
+            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)*1.1
         elif i in heures_creuses:
-            conso_maisons = np.random.uniform(0.24, 0.56, n_maisons)*0.9
+            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)*0.9
         else:
-            conso_maisons = np.random.uniform(0.24, 0.56, n_maisons)
+            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)
         consommation.append(conso_maisons.sum())
      
     return consommation
