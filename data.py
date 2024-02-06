@@ -6,7 +6,6 @@ def get_consumption_yesterday():
     # pour chaque communauté, on retourne une liste de 24 valeurs
     # chaque valeur est la consommation en kWh pour une heure de la journée
 
-    n_communautes = 8
     n_maisons = 1000
     heures_pleines = [8,9,10,11,12,13,14,20,21]
     heures_creuses = [1,2,3,4,5]
@@ -28,7 +27,7 @@ def get_consumption_yesterday():
     return consommation
 
 
-def pred_consumtion():
+def pred_consumption():
     # on retourne la prédiction de la consommation pour chaque communauté
 
     conso_hier = get_consumption_yesterday()
@@ -38,12 +37,5 @@ def pred_consumtion():
     prediction = np.convolve(conso_hier, np.ones(fenetre)/fenetre, mode='same')
     prediction[0] = conso_hier[0]
     prediction[-1] = conso_hier[-1]
-    # graphique
-    plt.plot(conso_hier, label="hier")
-    plt.plot(prediction, label="prédiction")
-    plt.legend()
-    plt.show()
 
     return prediction
-
-print(pred_consumtion())
