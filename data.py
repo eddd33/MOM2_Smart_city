@@ -39,3 +39,6 @@ def pred_consumption():
     prediction[-1] = conso_hier[-1]
 
     return prediction
+
+def grid_retail_price():
+    return [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]
