@@ -8,43 +8,72 @@ heures_pleines = [8, 9, 10, 11, 12, 13, 14, 20, 21]
 heures_creuses = [1, 2, 3, 4, 5]
 demande = [pred_consumption() for k in range(n_communautes)]  # Matrice de demande d'électricité pour chaque heure et chaque communauté
 
-# Création du problème
-problem = pulp.LpProblem("Production_et_stockage", pulp.LpMinimize)
 
-# Variables de décision
-# Production des générateurs pour chaque heure et chaque communauté
-generateur = {(i, h): pulp.LpVariable(f"generateur_{i}_{h}", lowBound=3000, upBound=9000) for i in range(n_communautes) for h in range(n_heures)}
-# Stockage dans les batteries ESS pour chaque heure et chaque communauté
-stockage_ESS = {(i, h): pulp.LpVariable(f"stockage_ESS_{i}_{h}", lowBound=0, upBound=500) for i in range(n_communautes) for h in range(n_heures)}
-# Stockage dans les batteries EV pour chaque heure et chaque communauté
-stockage_EV = {(i, h): pulp.LpVariable(f"stockage_EV_{i}_{h}", lowBound=0, upBound=420) for i in range(n_communautes) for h in range(n_heures)}
-# Stockage dans la batterie BIG pour chaque heure dans la grille
-stockage_BIG = {h: pulp.LpVariable(f"stockage_BIG_{h}", lowBound=0, upBound=5000) for h in range(n_heures)}
+def solve(demande,hour,ess,ev,big):
 
-# Objectif : production égale à la demande
-for i in range(n_communautes):
-    for h in range(n_heures):
-        problem += generateur[i, h] == demande[i][h] + stockage_ESS[i, h] + stockage_EV[i, h] + stockage_BIG[h]
+    demande = [demande[i][hour] for i in range(n_communautes)]
+    # Création du problème
+    problem = pulp.LpProblem("Production_et_stockage", pulp.LpMinimize)
 
-# Contraintes
-for i in range(n_communautes):
-    for h in range(n_heures):
+    # Variables de décision
+    # Production des générateurs pour chaque communauté
+    generateur = {(i): pulp.LpVariable(f"generateur_{i}", lowBound=3000, upBound=9000) for i in range(n_communautes)}
+    # Stockage dans les batteries ESS pour chaque communauté initialisé avec les valeurs passées en paramètre
+    stockage_ESS = {(i): pulp.LpVariable(f"stockage_ESS_{i}", lowBound=0, upBound=500) for i in range(n_communautes)}
+    # Stockage dans les batteries EV pour chaque heure et chaque communauté
+    stockage_EV = {(i): pulp.LpVariable(f"stockage_EV_{i}", lowBound=0, upBound=420) for i in range(n_communautes)}
+    # Stockage dans la batterie BIG pour chaque heure dans la grille
+    stockage_BIG = {(0): pulp.LpVariable(f"stockage_BIG", lowBound=0, upBound=5000)}
+
+    # on affecte les valeurs passées en paramètre
+    # for i in range(n_communautes):
+    #     stockage_ESS[i].setInitialValue(ess[i].value())
+    #     stockage_EV[i].setInitialValue(ev[i].value())
+    # stockage_BIG[0].setInitialValue(big)
+
+    # Objectif : production égale à la demande
+    for i in range(n_communautes):
+        problem += generateur[i] == demande[i]  + stockage_ESS[i] + stockage_EV[i] + stockage_BIG - ess[i].value() - ev[i].value() - big
+
+    # Contraintes
+    for i in range(n_communautes):
         # Contrainte de production pendant les heures creuses
-        if h in heures_creuses:
-            problem += generateur[i, h] >= 1.1 * demande[i][h]
+        if hour in heures_creuses:
+            problem += generateur[i] >= 1.1 * demande[i]
         # Contrainte de production pendant les heures pleines
-        elif h in heures_pleines:
-            problem += generateur[i, h] <= demande[i][h] + stockage_ESS[i, h-1] + stockage_EV[i, h-1] + stockage_BIG[h-1]
+        elif hour in heures_pleines:
+            problem += generateur[i] <= demande[i] + stockage_ESS[i] + stockage_EV[i] + stockage_BIG
         # Contrainte de production pour le reste des heures
         else:
-            problem += generateur[i, h] >= 1.05 * demande[i][h]
-        
-# Résolution du problème
-problem.solve()
+            problem += generateur[i] >= 1.05 * demande[i]
+        # Contrainte si l'on produit plus que la demande
+            
+            
+    # Résolution du problème
+    problem.solve()
 
-# Affichage des résultats
+    # Affichage des résultats
+    print(f"Résultats pour l'heure {hour}")
+    print("------------------")
+    for i in range(n_communautes):
+        print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
+        print(f"Différence génération besoin = {generateur[i].value() - demande[i]}")
+        print(f"Total stockage = {stockage_ESS[i].value() + stockage_EV[i].value()}")
+    print(f"Stockage BIG = {stockage_BIG[0].value()}")
+
+    return stockage_ESS, stockage_EV, stockage_BIG[0].value()
+
+
+# Stockage dans les batteries ESS pour chaque communauté initialisé avec les valeurs passées en paramètre
+stockage_ESS = {(i): pulp.LpVariable(f"stockage_ESS_{i}", lowBound=0, upBound=500) for i in range(n_communautes)}
+# Stockage dans les batteries EV pour chaque heure et chaque communauté
+stockage_EV = {(i): pulp.LpVariable(f"stockage_EV_{i}", lowBound=0, upBound=420) for i in range(n_communautes)}
+
+# Initialisation des valeurs de stockage
 for i in range(n_communautes):
-    for h in range(n_heures):
-        print(f"Communauté {i}, Heure {h}: Prévision = {demande[i][h]}, Production générateur = {generateur[i, h].value()}, Stockage ESS = {stockage_ESS[i, h].value()}, Stockage EV = {stockage_EV[i, h].value()}")
-for h in range(n_heures):
-    print(f"Heure {h}: Stockage BIG = {stockage_BIG[h].value()}")
+    stockage_ESS[i].setInitialValue(0)
+    stockage_EV[i].setInitialValue(0)
+
+ess, ev, big = solve(demande, 0, stockage_ESS, stockage_EV, 0)
+
+solve(demande, 1, ess, ev, big)
