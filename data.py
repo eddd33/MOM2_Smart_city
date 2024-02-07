@@ -17,11 +17,11 @@ def get_consumption_yesterday():
     consommation = []
     for i in range(24):
         if i in heures_pleines:
-            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)*1.1
+            conso_maisons = np.random.normal(5.55, 13.63, n_maisons)*1.1
         elif i in heures_creuses:
-            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)*0.9
+            conso_maisons = np.random.normal(5.55, 13.63, n_maisons)*0.9
         else:
-            conso_maisons = np.random.uniform(5.55, 13.63, n_maisons)
+            conso_maisons = np.random.normal(5.55, 13.63, n_maisons)
         consommation.append(conso_maisons.sum())
      
     return consommation
@@ -38,7 +38,7 @@ def pred_consumption():
     prediction[0] = conso_hier[0]
     prediction[-1] = conso_hier[-1]
 
-    return prediction
+    return conso_hier
 
 def grid_retail_price():
     return [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]
