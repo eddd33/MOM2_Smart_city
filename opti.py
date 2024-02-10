@@ -25,11 +25,6 @@ def solve(demande,hour,ess,ev,big):
     # Stockage dans la batterie BIG pour chaque heure dans la grille
     stockage_BIG = {(0): pulp.LpVariable(f"stockage_BIG", lowBound=0, upBound=5000)}
 
-    # on affecte les valeurs passées en paramètre
-    # for i in range(n_communautes):
-    #     stockage_ESS[i].setInitialValue(ess[i].value())
-    #     stockage_EV[i].setInitialValue(ev[i].value())
-    # stockage_BIG[0].setInitialValue(big)
 
     # Objectif : production égale à la demande
     for i in range(n_communautes):
@@ -53,30 +48,15 @@ def solve(demande,hour,ess,ev,big):
     problem.solve()
 
     # Affichage des résultats
-    print(f"Résultats pour l'heure {hour}")
-    print("------------------")
-    for i in range(n_communautes):
-        print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
-        print(f"Différence génération besoin = {generateur[i].value() - demande[i]}")
-        print(f"Total stockage = {stockage_ESS[i].value() + stockage_EV[i].value()}")
-        print(f"Surplus généré de l'heure précédente = {(ess[i].value() + ev[i].value())}")
-        print(f"Surplus de cette heure = {stockage_ESS[i].value() + stockage_EV[i].value() - (ess[i].value() + ev[i].value())}")
-        break
-    print(f"Stockage BIG = {stockage_BIG[0].value()}")
+    # print(f"Résultats pour l'heure {hour}")
+    # print("------------------")
+    # for i in range(n_communautes):
+    #     print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
+    #     print(f"Différence génération besoin = {generateur[i].value() - demande[i]}")
+    #     print(f"Total stockage = {stockage_ESS[i].value() + stockage_EV[i].value()}")
+    #     print(f"Surplus généré de l'heure précédente = {(ess[i].value() + ev[i].value())}")
+    #     print(f"Surplus de cette heure = {stockage_ESS[i].value() + stockage_EV[i].value() - (ess[i].value() + ev[i].value())}")
+    #     break
+    # print(f"Stockage BIG = {stockage_BIG[0].value()}")
 
     return stockage_ESS, stockage_EV, stockage_BIG[0].value()
-
-
-# Stockage dans les batteries ESS pour chaque communauté initialisé avec les valeurs passées en paramètre
-stockage_ESS = {(i): pulp.LpVariable(f"stockage_ESS_{i}", lowBound=0, upBound=500) for i in range(n_communautes)}
-# Stockage dans les batteries EV pour chaque heure et chaque communauté
-stockage_EV = {(i): pulp.LpVariable(f"stockage_EV_{i}", lowBound=0, upBound=420) for i in range(n_communautes)}
-
-# Initialisation des valeurs de stockage
-for i in range(n_communautes):
-    stockage_ESS[i].setInitialValue(0)
-    stockage_EV[i].setInitialValue(0)
-
-ess, ev, big = solve(demande, 0, stockage_ESS, stockage_EV, 0)
-for k in range(1, 24):
-    ess, ev, big = solve(demande, k, ess, ev, big)
