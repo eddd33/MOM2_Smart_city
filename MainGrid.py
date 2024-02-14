@@ -34,6 +34,7 @@ class MainGrid(Model):
         self.ev = []
         self.l_big = []
         self.gene = []
+        self.prices = []
 
         self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
         self.ev.append([self.stockage_EV[i].value() for i in range(8)])
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     # print(m.ev)
     # print(m.l_big)
     fig = plt.figure(figsize=(20, 8))
-    plt.subplot(3, 1, 1)
+    plt.subplot(4, 1, 1)
     plt.plot([sum(val) for val in m.ess])
     plt.plot([sum(val) for val in m.ev])
     plt.plot([val for val in m.l_big])
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     plt.title('Stockage')
     plt.legend(['ESS', 'EV', 'BIG', 'GENE'])
 
-    plt.subplot(3, 1, 2)
+    plt.subplot(4, 1, 2)
     for i in range(8):
         plt.plot(m.pred_consumption[i])
     plt.ylabel('kW')
@@ -82,10 +83,22 @@ if __name__ == "__main__":
     plt.title('Consommation')
     plt.legend(['communauté 1', 'communauté 2', 'communauté 3', 'communauté 4', 'communauté 5', 'communauté 6', 'communauté 7', 'communauté 8'])
 
-    plt.subplot(3, 1, 3)
+    plt.subplot(4, 1, 3)
     conso_tot = [sum([m.pred_consumption[i][j] for i in range(8)]) for j in range(24)]
     plt.plot(conso_tot)
     plt.ylabel('kW')
     plt.xlabel('Heures')
     plt.title('Consommation totale')
+
+    plt.subplot(4, 1, 4)
+    for i in range(8):
+        prix = []
+        for j in range(24):
+            prix.append(m.schedule.agents[i].paid_electricity[j]*m.gene[j][i])
+        plt.plot((prix))
+
+    plt.ylabel('€')
+    plt.xlabel('Heures')
+    plt.title('prix par heures')
+    plt.legend(['communauté 1', 'communauté 2', 'communauté 3', 'communauté 4', 'communauté 5', 'communauté 6', 'communauté 7', 'communauté 8'])
     plt.show()
