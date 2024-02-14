@@ -3,9 +3,10 @@ from mesa.time import RandomActivation
 import numpy as np
 from cems import CEMS, BoundedVariable
 from opti import solve
-from data import pred_consumption
+from data import pred_consumption, grid_retail_price, market_clearing_price
 import pulp
 import tqdm
+import matplotlib.pyplot as plt
 
 class MainGrid(Model):
     def __init__(self):
@@ -20,7 +21,6 @@ class MainGrid(Model):
         self.big = 0
 
 
-
         # Initialisation des valeurs de stockage
         self.pred_consumption = []
         for i in range(n_communautes):
@@ -30,26 +30,62 @@ class MainGrid(Model):
             # on crée le tableau des predictions de consommation en récupérant les prédiction de chaque agent
             self.pred_consumption.append(self.schedule.agents[i].pred_consumption)
 
-        self.ess = [self.stockage_ESS[i].value() for i in range(8)]
-        self.ev = [self.stockage_EV[i].value() for i in range(8)]
-        self.l_big = [self.big]
+        self.ess = []
+        self.ev = []
+        self.l_big = []
+        self.gene = []
+
+        self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
+        self.ev.append([self.stockage_EV[i].value() for i in range(8)])
+        self.l_big.append(self.big)
+
     
     def step(self):
         super().step()
 
         for hour in range(24):
-            self.stockage_ESS, self.stockage_EV, self.big = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big)
+            self.stockage_ESS, self.stockage_EV, self.big, generateur = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big)
 
             # on stocke dans les listes pour garder un historique
             self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
             self.ev.append([self.stockage_EV[i].value() for i in range(8)])
             self.l_big.append(self.big)
+            self.gene.append([generateur[i].value() for i in range(8)])
 
             for agent in self.schedule.agents:
                 
                 agent.step(hour)
 
+# main
+if __name__ == "__main__":
+    m = MainGrid()
+    m.step()
+    # print(m.ess)
+    # print(m.ev)
+    # print(m.l_big)
+    fig = plt.figure(figsize=(20, 8))
+    plt.subplot(3, 1, 1)
+    plt.plot([sum(val) for val in m.ess])
+    plt.plot([sum(val) for val in m.ev])
+    plt.plot([val for val in m.l_big])
+    plt.plot([sum(val) for val in m.gene])
+    plt.ylabel('kWh')
+    plt.xlabel('Heures')
+    plt.title('Stockage')
+    plt.legend(['ESS', 'EV', 'BIG', 'GENE'])
 
-# test
-m = MainGrid()
-m.step()
+    plt.subplot(3, 1, 2)
+    for i in range(8):
+        plt.plot(m.pred_consumption[i])
+    plt.ylabel('kWh')
+    plt.xlabel('Heures')
+    plt.title('Consommation')
+    plt.legend(['communauté 1', 'communauté 2', 'communauté 3', 'communauté 4', 'communauté 5', 'communauté 6', 'communauté 7', 'communauté 8'])
+
+    plt.subplot(3, 1, 3)
+    conso_tot = [sum([m.pred_consumption[i][j] for i in range(8)]) for j in range(24)]
+    plt.plot(conso_tot)
+    plt.ylabel('kWh')
+    plt.xlabel('Heures')
+    plt.title('Consommation totale')
+    plt.show()

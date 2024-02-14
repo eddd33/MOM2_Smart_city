@@ -6,7 +6,7 @@ n_communautes = 8
 n_heures = 24
 heures_pleines = [8, 9, 10, 11, 12, 13, 14, 20, 21]
 heures_creuses = [1, 2, 3, 4, 5]
-demande = [pred_consumption() for k in range(n_communautes)]  # Matrice de demande d'électricité pour chaque heure et chaque communauté
+# demande = [pred_consumption() for k in range(n_communautes)]  # Matrice de demande d'électricité pour chaque heure et chaque communauté
 
 
 def solve(demande,hour,ess,ev,big):
@@ -47,11 +47,12 @@ def solve(demande,hour,ess,ev,big):
     # Résolution du problème
     problem.solve()
 
-    # Affichage des résultats
-    # print(f"Résultats pour l'heure {hour}")
-    # print("------------------")
-    # for i in range(n_communautes):
-    #     print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
+    # # Affichage des résultats
+    print(f"Résultats pour l'heure {hour}")
+    print("------------------")
+
+    for i in range(n_communautes):
+        print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
     #     print(f"Différence génération besoin = {generateur[i].value() - demande[i]}")
     #     print(f"Total stockage = {stockage_ESS[i].value() + stockage_EV[i].value()}")
     #     print(f"Surplus généré de l'heure précédente = {(ess[i].value() + ev[i].value())}")
@@ -59,4 +60,8 @@ def solve(demande,hour,ess,ev,big):
     #     break
     # print(f"Stockage BIG = {stockage_BIG[0].value()}")
 
-    return stockage_ESS, stockage_EV, stockage_BIG[0].value()
+    return stockage_ESS, stockage_EV, stockage_BIG[0].value(), generateur
+
+
+def tabou_search():
+    pass

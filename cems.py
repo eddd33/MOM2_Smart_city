@@ -31,10 +31,12 @@ class CEMS(Agent):
         super().__init__(unique_id, model)
         self.schedule = RandomActivation(self)
         # une communauté contient 1000 hems
+        repart = {'vert': 0, 'stable': 0, 'bas coût': 0}
         for i in range(1000):
             a = HEMS(i, self)
             self.schedule.add(a)
-
-        self.pred_consumption = pred_consumption()
+            repart[a.a_demand.mode] += 1
+        print("Voici la répartition",repart)
+        self.pred_consumption = pred_consumption(repart)
     def step(self, hour):
         pass
