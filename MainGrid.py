@@ -69,7 +69,7 @@ if __name__ == "__main__":
     plt.plot([sum(val) for val in m.ev])
     plt.plot([val for val in m.l_big])
     plt.plot([sum(val) for val in m.gene])
-    plt.ylabel('kWh')
+    plt.ylabel('kW')
     plt.xlabel('Heures')
     plt.title('Stockage')
     plt.legend(['ESS', 'EV', 'BIG', 'GENE'])
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     plt.subplot(3, 1, 2)
     for i in range(8):
         plt.plot(m.pred_consumption[i])
-    plt.ylabel('kWh')
+    plt.ylabel('kW')
     plt.xlabel('Heures')
     plt.title('Consommation')
     plt.legend(['communauté 1', 'communauté 2', 'communauté 3', 'communauté 4', 'communauté 5', 'communauté 6', 'communauté 7', 'communauté 8'])
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     plt.subplot(3, 1, 3)
     conso_tot = [sum([m.pred_consumption[i][j] for i in range(8)]) for j in range(24)]
     plt.plot(conso_tot)
-    plt.ylabel('kWh')
+    plt.ylabel('kW')
     plt.xlabel('Heures')
     plt.title('Consommation totale')
     plt.show()

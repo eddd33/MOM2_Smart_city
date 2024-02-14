@@ -17,7 +17,7 @@ def solve(demande,hour,ess,ev,big):
 
     # Variables de décision
     # Production des générateurs pour chaque communauté
-    generateur = {(i): pulp.LpVariable(f"generateur_{i}", lowBound=3000, upBound=9000) for i in range(n_communautes)}
+    generateur = {(i): pulp.LpVariable(f"generateur_{i}", lowBound=125, upBound=375) for i in range(n_communautes)}
     # Stockage dans les batteries ESS pour chaque communauté initialisé avec les valeurs passées en paramètre
     stockage_ESS = {(i): pulp.LpVariable(f"stockage_ESS_{i}", lowBound=0, upBound=500) for i in range(n_communautes)}
     # Stockage dans les batteries EV pour chaque heure et chaque communauté
@@ -63,5 +63,7 @@ def solve(demande,hour,ess,ev,big):
     return stockage_ESS, stockage_EV, stockage_BIG[0].value(), generateur
 
 
-def tabou_search():
+############################################################################################################
+
+def tabou_search(ev, ess, big, demande, générateur):
     pass
