@@ -35,7 +35,7 @@ class CEMS(Agent):
             a = HEMS(i, self)
             self.schedule.add(a)
             repart[a.a_demand.mode] += 1
-        print("Voici la répartition",repart)
+        #print("Voici la répartition",repart)
         self.pred_consumption = pred_consumption(repart)
 
         self.paid_electricity = [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]
