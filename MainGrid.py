@@ -2,7 +2,7 @@ from mesa import Agent, Model
 from mesa.time import RandomActivation
 import numpy as np
 from cems import CEMS, BoundedVariable
-from opti import solve, solve2
+from opti import solve
 from data import pred_consumption, grid_retail_price, market_clearing_price
 import pulp
 import tqdm
@@ -25,9 +25,9 @@ class MainGrid(Model):
         # Initialisation des valeurs de stockage
         self.pred_consumption = []
         for i in range(n_communautes):
-            self.stockage_ESS[i].setInitialValue(0)
-            self.stockage_EV[i].setInitialValue(0)
-            self.generateur[i].setInitialValue(250)
+            self.stockage_ESS[i].setInitialValue(100)
+            self.stockage_EV[i].setInitialValue(100)
+            
 
             # on crée le tableau des predictions de consommation en récupérant les prédiction de chaque agent
             self.pred_consumption.append(self.schedule.agents[i].pred_consumption)
@@ -48,7 +48,7 @@ class MainGrid(Model):
         super().step()
 
         for hour in range(24):
-            self.stockage_ESS, self.stockage_EV, self.big, self.generateur = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big, self.generateur)
+            self.stockage_ESS, self.stockage_EV, self.big, self.generateur = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big)
 
             # on stocke dans les listes pour garder un historique
             self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
@@ -59,9 +59,6 @@ class MainGrid(Model):
             for agent in self.schedule.agents:
                 
                 agent.step(hour)
-        #sol, m, p, j = solve2(self.pred_consumption)
-        # self.best_sol = optimize_daily_generation(self.ess, self.ev, self.l_big, self.pred_consumption, self.gene)
-        # print(self.best_sol)
 
 # main
 if __name__ == "__main__":

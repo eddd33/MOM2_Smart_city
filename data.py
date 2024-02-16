@@ -48,7 +48,7 @@ def get_consumption_yesterday(répartition):
 
 
         consommation.append(sum(conso_heure))
-        print(consommation)
+        #print(consommation)
     return consommation
 
 
