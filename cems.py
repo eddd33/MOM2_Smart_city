@@ -18,13 +18,13 @@ class CEMS(Agent):
         self.schedule = RandomActivation(self)
 
         # une communauté contient 1000 hems
-        repart = {'vert': 0, 'stable': 0, 'bas coût': 0}
+        self.repart = {'vert': 0, 'stable': 0, 'bas coût': 0}
         for i in range(1000):
             a = HEMS(i, self)
             self.schedule.add(a)
-            repart[a.a_demand.mode] += 1
+            self.repart[a.a_demand.mode] += 1
 
-        self.pred_consumption = pred_consumption(repart)
+        self.pred_consumption = pred_consumption(self.repart)
 
         self.paid_electricity = [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]
         

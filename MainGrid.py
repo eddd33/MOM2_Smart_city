@@ -18,7 +18,6 @@ class MainGrid(Model):
             a = CEMS(i, self)
             self.schedule.add(a)
 
-
         # Initialisation des valeurs de stockage
         self.pred_consumption = []
         for i in range(n_communautes):        
