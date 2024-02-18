@@ -2,10 +2,10 @@
 
 ## Objectifs du cours
 
-Contribuer à un cas pratique mêlant smart grid, données massives et science des données. 
-Reproduire une expérimentation issue de littérature scientifique. 
-Découvrir l’apport de la recherche et développement pour un domaine industriel en pleine mutation face aux enjeux de société et de territoire. 
-S’inscrire dans une logique open science pour créer du commun. 
+Contribuer à un cas pratique mêlant smart grid, données massives et science des données.  
+Reproduire une expérimentation issue de littérature scientifique.  
+Découvrir l’apport de la recherche et développement pour un domaine industriel en pleine mutation face aux enjeux de société et de territoire.  
+S’inscrire dans une logique open science pour créer du commun.  
 
 ## Objectif du projet
 
@@ -13,8 +13,8 @@ L'objectif de ce projet est d'implémenter la solution de management de l'énerg
 
 ## Diagramme UML
 
-!(/images/UML.PNG)
+![yes](images/UML.PNG)
 
 ## Diagramme de séquence
 
-!(/images/DiagSeq.PNG)
+![no](images/DiagSeq.PNG)
