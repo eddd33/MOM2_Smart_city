@@ -1,5 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
+####################################################################################################
+# Consommation
+####################################################################################################
 
 def get_consumption_yesterday(répartition):
     # on retourne la consommation d'hier de chaque communauté
@@ -25,7 +28,6 @@ def get_consumption_yesterday(répartition):
         else:
             conso_maisons = np.random.normal(0.4, 0.169, répartition['bas coût'])
         conso_heure.append(sum(conso_maisons))
-
 
         # mode vert
         if i in heures_pleines:
@@ -61,8 +63,12 @@ def pred_consumption(répartition):
     prediction = np.convolve(conso_hier, np.ones(fenetre)/fenetre, mode='same')
     prediction[0] = conso_hier[0]
     prediction[-1] = conso_hier[-1]
-    
+
     return prediction
+
+####################################################################################################
+# Prix de l'électricité
+####################################################################################################
 
 def grid_retail_price(conso):
     price = [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]

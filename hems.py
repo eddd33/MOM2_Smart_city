@@ -33,15 +33,19 @@ class BatteryAgent(Agent):
 class HEMS(Agent):
     # modèle de la maison
     def __init__(self, unique_id, model):
+        
         super().__init__(unique_id, model)
         self.schedule = RandomActivation(self)
+
         # création des agents
         self.a_demand = DemandAgent(1, self)
         self.a_generation = GenerationAgent(2, self)
         self.a_battery = BatteryAgent(3, self)
+
         # ajout des agents à la liste
         self.schedule.add(self.a_demand)
         self.schedule.add(self.a_generation)
         self.schedule.add(self.a_battery)
+
     def step(self):
         self.schedule.step()

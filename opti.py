@@ -44,22 +44,9 @@ def solve(demande,hour,ess,ev,big):
         else:
             problem += generateur[i] >= 1.05 * demande[i]
 
-            
-            
+
     # Résolution du problème
     problem.solve(pulp.PULP_CBC_CMD(msg=0))
 
-        # Affichage des résultats
-    print(f"Résultats pour l'heure {hour-1}")
-    print("------------------")
-
-    for i in range(n_communautes):
-        print(f"Communauté {i}: Prévision = {demande[i]}, Production générateur = {generateur[i].value()}, Stockage ESS = {stockage_ESS[i].value()}, Stockage EV = {stockage_EV[i].value()}")
-        # print(f"Différence génération besoin = {generateur[i].value() - demande[i]}")
-        # print(f"Total stockage = {stockage_ESS[i].value() + stockage_EV[i].value()}")
-        # print(f"Surplus généré de l'heure précédente = {(ess[i].value() + ev[i].value())}")
-        # print(f"Surplus de cette heure = {stockage_ESS[i].value() + stockage_EV[i].value() - (ess[i].value() + ev[i].value())}")
-        # break
-    print(f"Stockage BIG = {stockage_BIG[0].value()}")
 
     return stockage_ESS, stockage_EV, stockage_BIG[0].value(), generateur

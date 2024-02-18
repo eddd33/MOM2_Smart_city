@@ -1,20 +1,22 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
-import numpy as np
 from cems import CEMS
 from opti import solve
-from data import pred_consumption, grid_retail_price, market_clearing_price
 import pulp
 import matplotlib.pyplot as plt
 
+####################################################################################################
+
 class MainGrid(Model):
+
     def __init__(self):
+
         n_communautes = 8
         self.schedule = RandomActivation(self)
+
         for i in range(n_communautes):
             a = CEMS(i, self)
             self.schedule.add(a)
-
 
 
         # Initialisation des valeurs de stockage
@@ -34,17 +36,11 @@ class MainGrid(Model):
         self.gene = []
         self.prices = []
 
-        print("init",self.stockage_ESS)
-        print("init",self.stockage_ESS[0].value())
     def step(self):
         super().step()
 
         for hour in range(25):
             self.stockage_ESS, self.stockage_EV, self.big, self.generateur = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big)
-            print(f"Résultats pour l'heure {hour}")
-            print("------------------")
-            print(f"Stockage ESS = {self.stockage_ESS}")
-            print(f"Stockage ESS 0 = {self.stockage_EV[0].value()}")
 
             # on stocke dans les listes pour garder un historique
             self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
@@ -52,8 +48,7 @@ class MainGrid(Model):
             self.l_big.append(self.big)
             self.gene.append([self.generateur[i].value() for i in range(8)])
 
-            for agent in self.schedule.agents:
-                
+            for agent in self.schedule.agents:   
                 agent.step(hour)
 
 
@@ -61,17 +56,15 @@ class MainGrid(Model):
 if __name__ == "__main__":
     m = MainGrid()
     m.step()
-    # print(m.ess)
-    # print(m.ev)
-    # print(m.l_big)
+
 
     # on enlève la première valeur car elle est à 0
-    print(m.ess)
+
     m.ess = m.ess[1:]
     m.ev = m.ev[1:]
     m.l_big = m.l_big[1:]
     m.gene = m.gene[1:]
-    print(m.ess)
+
     fig = plt.figure(figsize=(22, 14))
     plt.subplot(4, 1, 1)
     plt.plot([sum(val) for val in m.ess])
