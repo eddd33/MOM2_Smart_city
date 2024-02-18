@@ -6,7 +6,6 @@ def get_consumption_yesterday(répartition):
     # pour chaque communauté, on retourne une liste de 24 valeurs
     # chaque valeur est la consommation en kWh pour une heure de la journée
 
-    n_maisons = 1000
     heures_pleines = [8,9,10,11,12,13,14,20,21]
     heures_creuses = [1,2,3,4,5]
 
@@ -48,7 +47,7 @@ def get_consumption_yesterday(répartition):
 
 
         consommation.append(sum(conso_heure))
-        #print(consommation)
+
     return consommation
 
 
@@ -62,7 +61,8 @@ def pred_consumption(répartition):
     prediction = np.convolve(conso_hier, np.ones(fenetre)/fenetre, mode='same')
     prediction[0] = conso_hier[0]
     prediction[-1] = conso_hier[-1]
-    return conso_hier
+    
+    return prediction
 
 def grid_retail_price(conso):
     price = [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.95,0.8,0.8,0.82,0.81,0.7,0.7,0.6,0.55,0.5,0.44,0.43,0.42,0.42,0.41,0.4,0.39]

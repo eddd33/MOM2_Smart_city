@@ -1,11 +1,10 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 import numpy as np
-from cems import CEMS, BoundedVariable
+from cems import CEMS
 from opti import solve
 from data import pred_consumption, grid_retail_price, market_clearing_price
 import pulp
-import tqdm
 import matplotlib.pyplot as plt
 
 class MainGrid(Model):
@@ -28,22 +27,12 @@ class MainGrid(Model):
         self.stockage_EV = {(i): pulp.LpVariable(f"stockage_EV_{i}", lowBound=0, upBound=420) for i in range(n_communautes)}
         self.big = 1000
 
-        # on initialise stockage ESS à 100
-        # for i in range(n_communautes):
-        #     self.stockage_ESS[i].setInitialValue(200)
-        #     self.stockage_EV[i].setInitialValue(50)
-
 
         self.ess = []
         self.ev = []
         self.l_big = []
         self.gene = []
         self.prices = []
-
-     #   self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
-  #      self.ev.append([self.stockage_EV[i].value() for i in range(8)])
-#        self.gene.append([self.generateur[i].value() for i in range(8)])
-   #     self.l_big.append(self.big)
 
         print("init",self.stockage_ESS)
         print("init",self.stockage_ESS[0].value())
@@ -56,7 +45,7 @@ class MainGrid(Model):
             print("------------------")
             print(f"Stockage ESS = {self.stockage_ESS}")
             print(f"Stockage ESS 0 = {self.stockage_EV[0].value()}")
-            # break
+
             # on stocke dans les listes pour garder un historique
             self.ess.append([self.stockage_ESS[i].value() for i in range(8)])
             self.ev.append([self.stockage_EV[i].value() for i in range(8)])

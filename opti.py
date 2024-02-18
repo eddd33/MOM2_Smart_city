@@ -1,13 +1,10 @@
 import pulp
-from data import pred_consumption
-from tqdm import tqdm
 
 # Données du problème
 n_communautes = 8
 n_heures = 24
 heures_pleines = [8, 9, 10, 11, 12, 13, 14, 20, 21]
 heures_creuses = [1, 2, 3, 4, 5]
-# demande = [pred_consumption() for k in range(n_communautes)]  # Matrice de demande d'électricité pour chaque heure et chaque communauté
 
 
 def solve(demande,hour,ess,ev,big):
@@ -51,7 +48,7 @@ def solve(demande,hour,ess,ev,big):
             
     # Résolution du problème
     problem.solve(pulp.PULP_CBC_CMD(msg=0))
-    #if hour == 0:
+
         # Affichage des résultats
     print(f"Résultats pour l'heure {hour-1}")
     print("------------------")
@@ -66,17 +63,3 @@ def solve(demande,hour,ess,ev,big):
     print(f"Stockage BIG = {stockage_BIG[0].value()}")
 
     return stockage_ESS, stockage_EV, stockage_BIG[0].value(), generateur
-
-
-############################################################################################################
-
-
-def formattage(demande):
-    # on transforme demande en une liste contenant 24 listes de 8 valeurs
-    f_demande = []
-    for i in range(24):
-        f_demande.append([])
-        for j in range(8):
-            f_demande[i].append(demande[j][i])
-
-    return f_demande

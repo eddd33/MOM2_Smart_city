@@ -24,7 +24,7 @@ class BatteryAgent(Agent):
     # stocke l'électricité, se recharge et se décharge
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        # self.capacity = 100
+
     def step(self):
         pass
 
