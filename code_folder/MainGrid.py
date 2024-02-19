@@ -1,7 +1,7 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
-from cems import CEMS
-from opti import solve
+from code_folder.cems import CEMS
+from code_folder.opti import solve
 import pulp
 import matplotlib.pyplot as plt
 

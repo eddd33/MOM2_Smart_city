@@ -1,9 +1,8 @@
-from hems import HEMS
+from code_folder.hems import HEMS
 from mesa import Model, Agent
 from mesa.time import RandomActivation
 import numpy as np
-from data import pred_consumption
-from opti import solve
+from code_folder.data import pred_consumption
 
 ####################################################################################################   
 
