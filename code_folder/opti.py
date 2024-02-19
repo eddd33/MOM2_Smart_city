@@ -8,6 +8,13 @@ heures_creuses = [1, 2, 3, 4, 5]
 
 
 def solve(demande,hour,ess,ev,big):
+    """
+    demande : prédiction de la consommation sur la journée
+    hour : heure de la journée pour laquelle on résout le problème
+    ess : valeurs stockées dans les ess à l'heure précédente
+    ev : valeurs stockées dans les ev à l'heure précédente
+    big : valeur stockée dans big à l'heure précédente
+    """
     
     if hour == 0:
         demande = [0]*8
