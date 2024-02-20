@@ -40,6 +40,8 @@ class MainGrid(Model):
     def step(self):
         super().step()
 
+        # la première itération sert à résoudre le problème des None renvoyés à la première itération
+        # par la suite, on suivra la demande prédite
         for hour in range(25):
             self.stockage_ESS, self.stockage_EV, self.big, self.generateur = solve(self.pred_consumption, hour, self.stockage_ESS, self.stockage_EV, self.big)
 
