@@ -15,11 +15,15 @@ def solve(demande,hour,ess,ev,big):
     ev : valeurs stockées dans les ev à l'heure précédente
     big : valeur stockée dans big à l'heure précédente
     """
-    
+
+    # cette première heure sert à résoudre le fait que la première itération du solveur ne retourne que des None
     if hour == 0:
         demande = [0]*8
+    # par la suite on suit la demande prédite
     else:
         demande = [demande[i][hour-1] for i in range(n_communautes)]
+
+    
     # Création du problème
     problem = pulp.LpProblem("Production_et_stockage", pulp.LpMinimize)
 
